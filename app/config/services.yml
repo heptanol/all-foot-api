@@ -37,3 +37,4 @@ services:
         public: true
         arguments:
             - '@guzzle.client.api_foot'
+            - '%api_url%'
