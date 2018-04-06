@@ -52,6 +52,11 @@ class ApiService
         return $result;
     }
 
+    /**
+     * @param $id
+     * @param array $query
+     * @return string
+     */
     public function getFixtures($id, array $query)
     {
         $url = str_replace('{competitions_id}', $id, $this->url['get_fixtures']);
@@ -69,6 +74,44 @@ class ApiService
         }
 
         return json_encode($result);
+    }
+
+    /**
+     * @param $id
+     * @return mixed|null|string
+     */
+    public function getCompetition($id)
+    {
+        $url = str_replace('{competitions_id}', $id, $this->url['get_competition']);
+        $key = $this->generateKey($url);
+
+        if ($this->cache->has($key)) {
+            $result = $this->cache->get($key);
+        } else {
+            $result = $this->client->get($url)->getBody()->getContents();
+            $this->cache->set($key, $result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $id
+     * @return mixed|null|string
+     */
+    public function getTable($id)
+    {
+        $url = str_replace('{competitions_id}', $id, $this->url['get_table']);
+        $key = $this->generateKey($url);
+
+        if ($this->cache->has($key)) {
+            $result = $this->cache->get($key);
+        } else {
+            $result = $this->client->get($url)->getBody()->getContents();
+            $this->cache->set($key, $result);
+        }
+
+        return $result;
     }
 
     private function generateKey($url)
