@@ -76,4 +76,4 @@ guzzle:
                 timeout: 30
                 headers:
                     Accept: "application/json"
-                    X-Auth-Token: "a7c8f168d2f14f02bd678f24fa05aff0"
+                    X-Auth-Token: "%api_token%"

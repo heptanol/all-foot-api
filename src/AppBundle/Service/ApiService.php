@@ -125,8 +125,11 @@ class ApiService
         foreach ($fixtures as $fixture) {
             if ($fixture->matchday == $matchDay) {
                 $day = new \DateTime($fixture->date);
+                $now = new \DateTime();
+                $diff = date_diff($now, $day)->i;
                 $day->setTime(0,0,0);
                 $fixture->day = $day->format('Y-m-d\TH:i:s\Z');
+                $fixture->diff = $diff;
                 $result[] = $fixture;
             }
         }

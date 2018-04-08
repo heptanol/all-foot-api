@@ -22,3 +22,4 @@ parameters:
         get_competition: '/v1/competitions/{competitions_id}'
         get_fixtures: '/v1/competitions/{competitions_id}/fixtures'
         get_table: '/v1/competitions/{competitions_id}/leagueTable'
+    api_token: a7c8f168d2f14f02bd678f24fa05aff0
