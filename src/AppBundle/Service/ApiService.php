@@ -28,7 +28,7 @@ class ApiService
     {
         $this->client = $client;
         $this->url = $url;
-        $this->cache = new FilesystemCache('', 60);
+        $this->cache = new FilesystemCache('', 90000);
     }
 
     /**
@@ -64,13 +64,15 @@ class ApiService
 
         if ($this->cache->has($key)) {
             $result = $this->cache->get($key);
+            dump('cache');
         } else {
             $result = json_decode($this->client->get($url)->getBody());
             $this->cache->set($key, $result);
         }
 
-        if (property_exists($result, 'fixtures') && array_key_exists('matchday', $query)) {
-            $result = $this->filterByMatchDay($result->fixtures, $query['matchday']);
+        if (property_exists($result, 'matches') && array_key_exists('matchday', $query)) {
+            dump('filter');
+            $result = $this->filterByMatchDay($result->matches, $query['matchday']);
         }
 
         return json_encode($result);
@@ -99,9 +101,9 @@ class ApiService
      * @param $id
      * @return mixed|null|string
      */
-    public function getTable($id)
+    public function getTable($id, array $query)
     {
-        $url = str_replace('{competitions_id}', $id, $this->url['get_table']);
+        $url = str_replace('{competitions_id}', $id, $this->url['get_table']) .'?'. http_build_query($query);
         $key = $this->generateKey($url);
 
         if ($this->cache->has($key)) {
@@ -110,7 +112,6 @@ class ApiService
             $result = $this->client->get($url)->getBody()->getContents();
             $this->cache->set($key, $result);
         }
-
         return $result;
     }
 
@@ -124,7 +125,7 @@ class ApiService
         $result = array();
         foreach ($fixtures as $fixture) {
             if ($fixture->matchday == $matchDay) {
-                $day = new \DateTime($fixture->date);
+                $day = new \DateTime($fixture->utcDate);
                 $now = new \DateTime();
                 $diff = date_diff($now, $day)->i;
                 $day->setTime(0,0,0);
