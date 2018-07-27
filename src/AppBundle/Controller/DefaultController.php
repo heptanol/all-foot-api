@@ -16,7 +16,7 @@ class DefaultController extends Controller
      */
     public function getFixturesAction(Request $request, $id)
     {
-        $response = $this->get(ApiService::class)->getFixtures($id, $request->query->all());
+        $response = $this->get(ApiService::class)->getCompetionMatches($id, $request->query->all());
 
         $responseApi = new Response($response, JsonResponse::HTTP_OK);
         $responseApi->headers->set('Content-Type', 'application/json');
@@ -26,7 +26,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/competitions/{id}/leagueTable", name="table")
+     * @Route("/api/competitions/{id}/standings", name="table")
      */
     public function getTableAction(Request $request, $id)
     {
@@ -58,7 +58,7 @@ class DefaultController extends Controller
      */
     public function getTestAction(Request $request)
     {
-        $data = $this->get('guzzle.client.api_foot')->get('/v2/competitions/2019/matches?matchday=38')->getBody();
+        $data = $this->get('guzzle.client.api_foot')->get('/v2/competitions/2019/standings')->getBody();
         dump(\GuzzleHttp\json_decode($data));die;
     }
 

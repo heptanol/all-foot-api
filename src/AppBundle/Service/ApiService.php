@@ -28,7 +28,7 @@ class ApiService
     {
         $this->client = $client;
         $this->url = $url;
-        $this->cache = new FilesystemCache('', 90000);
+        $this->cache = new FilesystemCache('', 80000);
     }
 
     /**
@@ -57,22 +57,19 @@ class ApiService
      * @param array $query
      * @return string
      */
-    public function getFixtures($id, array $query)
+    public function getCompetionMatches($id, array $query)
     {
         $url = str_replace('{competitions_id}', $id, $this->url['get_fixtures']);
         $key = $this->generateKey($url);
 
         if ($this->cache->has($key)) {
             $result = $this->cache->get($key);
-            dump('cache');
         } else {
             $result = json_decode($this->client->get($url)->getBody());
             $this->cache->set($key, $result);
         }
-
         if (property_exists($result, 'matches') && array_key_exists('matchday', $query)) {
-            dump('filter');
-            $result = $this->filterByMatchDay($result->matches, $query['matchday']);
+            $result = $this->filterByMatchDay($result, $query['matchday']);
         }
 
         return json_encode($result);
@@ -109,10 +106,15 @@ class ApiService
         if ($this->cache->has($key)) {
             $result = $this->cache->get($key);
         } else {
-            $result = $this->client->get($url)->getBody()->getContents();
+            $result = json_decode($this->client->get($url)->getBody());
             $this->cache->set($key, $result);
         }
-        return $result;
+
+        if (property_exists($result, 'standings')) {
+            $result = $this->getTotalStanding($result->standings);
+        }
+
+        return json_encode($result);
     }
 
     private function generateKey($url)
@@ -120,21 +122,41 @@ class ApiService
         return str_replace('/', '.', $url);
     }
 
-    private function filterByMatchDay(array $fixtures, $matchDay)
+    private function filterByMatchDay($data, $matchDay)
     {
-        $result = array();
-        foreach ($fixtures as $fixture) {
-            if ($fixture->matchday == $matchDay) {
-                $day = new \DateTime($fixture->utcDate);
+        $matches = array();
+        $totalMatchDay = -1;
+        foreach ($data->matches as $match) {
+            if ($match->matchday == $matchDay) {
+                $day = new \DateTime($match->utcDate);
                 $now = new \DateTime();
                 $diff = date_diff($now, $day)->i;
                 $day->setTime(0,0,0);
-                $fixture->day = $day->format('Y-m-d\TH:i:s\Z');
-                $fixture->diff = $diff;
-                $result[] = $fixture;
+                $match->day = $day->format('Y-m-d\TH:i:s\Z');
+                $match->diff = $diff;
+                $matches[] = $match;
+            }
+            if ($match->matchday >= $totalMatchDay) {
+                $totalMatchDay = $match->matchday;
             }
         }
-        return $result;
+        $data->totalMatchDays = $totalMatchDay;
+        $data->matches = $matches;
+        return $data;
+    }
+
+    /**
+     * @param array $standings
+     * @return mixed
+     */
+    private function getTotalStanding(array $standings)
+    {
+        foreach ($standings as $standing) {
+            if (property_exists($standing, 'type') && $standing->type === 'TOTAL') {
+                return $standing->table;
+            }
+        }
+        return [];
     }
 
 
