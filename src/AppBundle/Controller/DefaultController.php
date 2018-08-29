@@ -54,12 +54,17 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/test", name="test")
+     * @Route("/api/matches/today", name="test")
      */
-    public function getTestAction(Request $request)
+    public function getTodayMatchsAction(Request $request)
     {
-        $data = $this->get('guzzle.client.api_foot')->get('/v2/competitions/2019/standings')->getBody();
-        dump(\GuzzleHttp\json_decode($data));die;
+        $response = $response = $this->get(ApiService::class)->getTodayMatchs();
+
+        $responseApi = new Response($response, JsonResponse::HTTP_OK);
+        $responseApi->headers->set('Content-Type', 'application/json');
+        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
+
+        return $responseApi;
     }
 
 }

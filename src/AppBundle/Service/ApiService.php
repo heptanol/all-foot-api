@@ -159,5 +159,25 @@ class ApiService
         return [];
     }
 
+    public function getTodayMatchs()
+    {
+        $now = new \DateTime();
+        $query = array(
+            'dateFrom' => $now->setTime(0,0, 0),
+            'dateTo' => $now->setTime(23,59, 59)
+        );
+        $url = $this->url['get_today_matchs'] .'?'. http_build_query($query);
+        $key = $this->generateKey($url);
+
+        if ($this->cache->has($key)) {
+            $result = $this->cache->get($key);
+        } else {
+            $result = json_decode($this->client->get($url)->getBody());
+            $this->cache->set($key, $result);
+        }
+
+        return json_encode($result);
+    }
+
 
 }
