@@ -128,13 +128,7 @@ class ApiService
         $totalMatchDay = -1;
         foreach ($data->matches as $match) {
             if ($match->matchday == $matchDay) {
-                $day = new \DateTime($match->utcDate);
-                $now = new \DateTime();
-                $diff = date_diff($now, $day)->i;
-                $day->setTime(0,0,0);
-                $match->day = $day->format('Y-m-d\TH:i:s\Z');
-                $match->diff = $diff;
-                $matches[] = $match;
+                $matches[] = $this->matchMapping($match);
             }
             if ($match->matchday >= $totalMatchDay) {
                 $totalMatchDay = $match->matchday;
@@ -159,6 +153,21 @@ class ApiService
         return [];
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
+    private function matchMapping($data)
+    {
+        $day = new \DateTime($data->utcDate);
+        $now = new \DateTime();
+        $diff = date_diff($now, $day)->i;
+        $day->setTime(0,0,0);
+        $data->day = $day->format('Y-m-d\TH:i:s\Z');
+        $data->diff = $diff;
+        return $data;
+    }
+
     public function getTodayMatchs()
     {
         $now = new \DateTime();
@@ -175,8 +184,24 @@ class ApiService
             $result = json_decode($this->client->get($url)->getBody());
             $this->cache->set($key, $result);
         }
+        $result = $this->filterTodayMatchs($result->matches);
 
         return json_encode($result);
+    }
+
+    /**
+     * @param $matchs
+     * @return mixed
+     */
+    public function filterTodayMatchs($matchs)
+    {
+        foreach ($matchs as $match) {
+            $match = $this->matchMapping($match);
+            if (property_exists($match, 'competition') && property_exists($match->competition, 'name') ) {
+                $match->competitionName = $match->competition->name;
+            }
+        }
+        return $matchs;
     }
 
 
