@@ -12,11 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/api/competitions/{id}/fixtures", name="fixtures")
+     * @Route("/api/competitions/{id}/matches", name="matches")
      */
     public function getFixturesAction(Request $request, $id)
     {
-        $response = $this->get(ApiService::class)->getFixtures($id, $request->query->all());
+        $response = $this->get(ApiService::class)->getCompetionMatches($id, $request->query->all());
 
         $responseApi = new Response($response, JsonResponse::HTTP_OK);
         $responseApi->headers->set('Content-Type', 'application/json');
@@ -26,11 +26,11 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/competitions/{id}/leagueTable", name="table")
+     * @Route("/api/competitions/{id}/standings", name="table")
      */
     public function getTableAction(Request $request, $id)
     {
-        $response = $this->get(ApiService::class)->getTable($id);
+        $response = $this->get(ApiService::class)->getTable($id, $request->query->all());
 
         $responseApi = new Response($response, JsonResponse::HTTP_OK);
         $responseApi->headers->set('Content-Type', 'application/json');
@@ -54,12 +54,17 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/test", name="test")
+     * @Route("/api/matches/today", name="test")
      */
-    public function getTestAction(Request $request)
+    public function getTodayMatchsAction(Request $request)
     {
-        $data = $this->get('guzzle.client.api_foot')->get('/v1/competitions')->getBody();
-        dump(\GuzzleHttp\json_decode($data));die;
+        $response = $response = $this->get(ApiService::class)->getTodayMatchs();
+
+        $responseApi = new Response($response, JsonResponse::HTTP_OK);
+        $responseApi->headers->set('Content-Type', 'application/json');
+        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
+
+        return $responseApi;
     }
 
 }
