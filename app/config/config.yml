@@ -78,3 +78,9 @@ guzzle:
                     Accept: "application/json"
                     X-Response-Control: "full"
                     X-Auth-Token: "%api_token%"
+        api_news:
+            base_url: "http://api.football-data.org"
+            options:
+                timeout: 30
+                headers:
+                    Accept: "application/json"

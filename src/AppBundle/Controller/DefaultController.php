@@ -11,6 +11,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
+
+//
+//    /**
+//     * @Route("/api/{requestUrl}", name="api", requirements={"requestUrl"=".+"})
+//     */
+//    public function apiCallAction(Request $request, $requestUrl)
+//    {
+//
+//        $response = $this->get(ApiService::class)->call($request, $requestUrl);
+//        $responseApi = new Response($response, JsonResponse::HTTP_OK);
+//        $responseApi->headers->set('Content-Type', 'application/json');
+//        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
+//
+//        return $responseApi;
+//    }
+
     /**
      * @Route("/api/competitions/{id}/matches", name="matches")
      */

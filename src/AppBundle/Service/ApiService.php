@@ -38,17 +38,9 @@ class ApiService
      */
     public function call(Request $request, $requestUrl)
     {
-        $url = '/v1/' . $requestUrl . '?' . $request->getQueryString();
-        $key = str_replace('/', '.', $url);
-        $callNumber = $this->cache->has('count') ? $this->cache->get('count') : 0;
-
-        if ($this->cache->get($key)) {
-           $result = $this->cache->get($key);
-        } else {
-            $result = (string) $this->client->get($url)->getBody();
-            $this->cache->set($key, $result);
-            $this->cache->set('count', ++$callNumber);
-        }
+        $url = '/v2/' . $requestUrl . '?' . $request->getQueryString();
+        $result = json_decode($this->client->get($url)->getBody()->getContents());
+        dump($result);die;
         return $result;
     }
 
@@ -145,12 +137,13 @@ class ApiService
      */
     private function getTotalStanding(array $standings)
     {
+        $result = array();
         foreach ($standings as $standing) {
             if (property_exists($standing, 'type') && $standing->type === 'TOTAL') {
-                return $standing->table;
+                $result[] = $standing->table;
             }
         }
-        return [];
+        return $result;
     }
 
     /**
