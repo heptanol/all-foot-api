@@ -52,9 +52,11 @@ class ApiService
      */
     public function getCompetition($id)
     {
-        $url = str_replace('{competitions_id}', $id, $this->url['get_competition']);
+        $url = str_replace('{competitions_id}', $id, $this->url['get_table']);
 
         $result = $this->cacheService->getResponse($url);
+
+        $result = $this->mappingService->getCompetition($result);
 
         return json_encode($result);
     }
@@ -76,6 +78,9 @@ class ApiService
         return json_encode($result);
     }
 
+    /**
+     * @return string
+     */
     public function getTodayMatchs()
     {
         $now = new \DateTime();

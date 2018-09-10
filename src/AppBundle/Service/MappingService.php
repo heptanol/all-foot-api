@@ -70,4 +70,16 @@ class MappingService
         }
         return $matchs;
     }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function getCompetition($data)
+    {
+        if($data->standings) {
+            unset($data->standings);
+        }
+        return $data;
+    }
 }
