@@ -33,8 +33,15 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
-    AppBundle\Service\ApiService:
+    AppBundle\Service\CacheService:
         public: true
         arguments:
             - '@guzzle.client.api_foot'
+    AppBundle\Service\ApiService:
+        public: true
+        arguments:
             - '%api_url%'
+            - '@AppBundle\Service\CacheService'
+            - '@AppBundle\Service\MappingService'
+    AppBundle\Service\MappingService:
+        public: true

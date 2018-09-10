@@ -12,23 +12,22 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
 
-//
-//    /**
-//     * @Route("/api/{requestUrl}", name="api", requirements={"requestUrl"=".+"})
-//     */
-//    public function apiCallAction(Request $request, $requestUrl)
-//    {
-//
-//        $response = $this->get(ApiService::class)->call($request, $requestUrl);
-//        $responseApi = new Response($response, JsonResponse::HTTP_OK);
-//        $responseApi->headers->set('Content-Type', 'application/json');
-//        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
-//
-//        return $responseApi;
-//    }
 
     /**
-     * @Route("/api/competitions/{id}/matches", name="matches")
+     * @Route("/api/competitions/{id}", name="competition")
+     */
+    public function getCompetitionAction($id)
+    {
+        $response = $this->get(ApiService::class)->getCompetition($id);
+
+        $responseApi = new Response($response, JsonResponse::HTTP_OK);
+        $responseApi->headers->set('Content-Type', 'application/json');
+
+        return $responseApi;
+    }
+
+    /**
+     * @Route("/api/competitions/{id}/matches", name="competitions_matches")
      */
     public function getFixturesAction(Request $request, $id)
     {
@@ -36,13 +35,12 @@ class DefaultController extends Controller
 
         $responseApi = new Response($response, JsonResponse::HTTP_OK);
         $responseApi->headers->set('Content-Type', 'application/json');
-        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
 
         return $responseApi;
     }
 
     /**
-     * @Route("/api/competitions/{id}/standings", name="table")
+     * @Route("/api/competitions/{id}/standings", name="competitions_standings")
      */
     public function getTableAction(Request $request, $id)
     {
@@ -50,35 +48,19 @@ class DefaultController extends Controller
 
         $responseApi = new Response($response, JsonResponse::HTTP_OK);
         $responseApi->headers->set('Content-Type', 'application/json');
-        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
 
         return $responseApi;
     }
 
     /**
-     * @Route("/api/competitions/{id}", name="competition")
+     * @Route("/api/matches/today", name="matches_today")
      */
-    public function getCompetitionAction(Request $request, $id)
-    {
-        $response = $this->get(ApiService::class)->getCompetition($id);
-
-        $responseApi = new Response($response, JsonResponse::HTTP_OK);
-        $responseApi->headers->set('Content-Type', 'application/json');
-        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
-
-        return $responseApi;
-    }
-
-    /**
-     * @Route("/api/matches/today", name="test")
-     */
-    public function getTodayMatchsAction(Request $request)
+    public function getTodayMatchsAction()
     {
         $response = $response = $this->get(ApiService::class)->getTodayMatchs();
 
         $responseApi = new Response($response, JsonResponse::HTTP_OK);
         $responseApi->headers->set('Content-Type', 'application/json');
-        $responseApi->headers->set('Access-Control-Allow-Origin', 'http://localhost:4200');
 
         return $responseApi;
     }

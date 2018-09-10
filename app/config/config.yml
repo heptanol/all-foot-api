@@ -84,3 +84,11 @@ guzzle:
                 timeout: 30
                 headers:
                     Accept: "application/json"
+
+nelmio_cors:
+    paths:
+      '^/api/':
+          allow_origin: ['*']
+          allow_headers: ['*']
+          allow_methods: ['GET']
+          max_age: 3600
