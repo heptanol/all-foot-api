@@ -41,6 +41,13 @@ class ApiCalls
      */
     private $response;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
 
     /**
      * Get id
@@ -77,6 +84,22 @@ class ApiCalls
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
      * Set response
      *
      * @param string $response
@@ -99,5 +122,17 @@ class ApiCalls
     {
         return $this->response;
     }
+
+    /**
+     * Gets triggered every time on update
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updatedAt = new \DateTime("now");
+    }
+
 }
 
