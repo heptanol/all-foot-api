@@ -1,0 +1,40 @@
+version: '2'
+services:
+
+  web:
+    image: nginx
+    ports:
+      - "15001:80"
+      - "15002:443"
+    links:
+      - php
+      - mysql
+    volumes:
+      - ./docker/sites:/etc/nginx/conf.d
+      - ./docker/conf/nginx.conf:/etc/nginx/nginx.conf
+    volumes_from:
+      - code
+
+  php:
+    build: .
+    working_dir: /var/www
+    volumes_from:
+      - code
+
+  mysql:
+    image: mysql
+    ports:
+      - "15003:3306"
+      - "15004:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+
+  code:
+      image: busybox
+      volumes:
+        - .:/var/www
+
+
+# COPY conf/my.cnf /etc/mysql/my.cnf
+# - ./conf/php.ini:/etc/php/7.1/fpm/conf.d/40-custom.ini
+# command: /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
