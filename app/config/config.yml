@@ -92,3 +92,14 @@ nelmio_cors:
           allow_headers: ['*']
           allow_methods: ['GET']
           max_age: 3600
+
+doctrine_cache:
+    aliases:
+        apc_cache: my_apc_cache
+
+    providers:
+        my_apc_cache:
+            type: apc
+            namespace: my_apc_cache_ns
+            aliases:
+                - apc_caches

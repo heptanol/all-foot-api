@@ -37,6 +37,7 @@ services:
         public: true
         arguments:
             - '@guzzle.client.api_foot'
+            - '@monolog.logger.api_calls'
     AppBundle\Service\ApiService:
         public: true
         arguments:
