@@ -12,6 +12,7 @@ web_profiler:
     intercept_redirects: false
 
 monolog:
+    channels: ['api_calls']
     handlers:
         main:
             type: stream
@@ -28,6 +29,11 @@ monolog:
             type: server_log
             process_psr_3_messages: false
             host: 127.0.0.1:9911
+        api_calls:
+            type: stream
+            path: '%kernel.logs_dir%/api_calls_%kernel.environment%.log'
+            level: debug
+            channels: api_calls
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:
