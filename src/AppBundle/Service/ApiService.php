@@ -85,12 +85,11 @@ class ApiService
     {
         $now = new \DateTime();
         $query = array(
-            'dateFrom' => $now->setTime(0,0, 0),
-            'dateTo' => $now->setTime(23,59, 59)
+            'dateFrom' => $now->format('Y-m-d'),
+            'dateTo' => $now->format('Y-m-d')
         );
         $url = $this->url['get_today_matchs'] .'?'. http_build_query($query);
         $result = $this->cacheService->getResponse($url);
-
         $result = $this->mappingService->filterTodayMatchs($result->matches);
 
         return json_encode($result);

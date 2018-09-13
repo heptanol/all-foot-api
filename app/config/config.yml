@@ -103,3 +103,12 @@ doctrine_cache:
             namespace: my_apc_cache_ns
             aliases:
                 - apc_caches
+
+monolog:
+    channels: ['api_calls']
+    handlers:
+        api_calls:
+            type: stream
+            path: '%kernel.logs_dir%/api_calls_%kernel.environment%.log'
+            level: info
+            channels: api_calls

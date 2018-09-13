@@ -1,0 +1,19 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: alaeddin_all_foot
+    database_user: alaeddin_admin
+    database_password: 'O.;8hBK~uQW*'
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: da37b576e05c97c87b9a990b650fdecaeae400a6
+    api_url:
+        get_competition: '/v2/competitions/{competitions_id}'
+        get_fixtures: '/v2/competitions/{competitions_id}/matches'
+        get_table: '/v2/competitions/{competitions_id}/standings'
+        get_today_matchs: /v2/matches
+        get_match: '/v2/matches/{match_id}'
+    api_token: a7c8f168d2f14f02bd678f24fa05aff0

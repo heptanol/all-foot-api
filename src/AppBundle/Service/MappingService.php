@@ -5,8 +5,11 @@ namespace AppBundle\Service;
 
 class MappingService
 {
-    public function __construct()
+    private $competitionsId;
+
+    public function __construct(array $competitionsId)
     {
+        $this->competitionsId = $competitionsId;
     }
 
     public function filterByMatchDay($data, $matchDay)
@@ -62,13 +65,17 @@ class MappingService
      */
     public function filterTodayMatchs($matchs)
     {
-        foreach ($matchs as $match) {
+        $result = [];
+        foreach ($matchs as $key => $match) {
             $match = $this->matchMapping($match);
             if (property_exists($match, 'competition') && property_exists($match->competition, 'name') ) {
                 $match->competitionName = $match->competition->name;
             }
+            if (in_array($match->competition->id, $this->competitionsId)) {
+                $result[] = $match;
+            }
         }
-        return $matchs;
+        return $result;
     }
 
     /**

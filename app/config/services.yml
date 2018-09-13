@@ -46,4 +46,5 @@ services:
             - '@AppBundle\Service\CacheService'
             - '@AppBundle\Service\MappingService'
     AppBundle\Service\MappingService:
+        arguments: ['%competitions_id%']
         public: true
